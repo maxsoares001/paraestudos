@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cronograma de Estudos - Max</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', sans-serif; background: #1a1a2e; color: #e0e0e0; padding: 20px; }
+  h1 { text-align: center; color: #00d4ff; margin-bottom: 5px; font-size: 1.8em; }
+  .sub { text-align: center; color: #888; margin-bottom: 25px; font-size: 0.9em; }
+  .dias { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 15px; }
+  .dia { background: #16213e; border-radius: 12px; padding: 15px; border: 1px solid #0f3460; }
+  .dia-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .dia-icon { font-size: 1.5em; }
+  .dia-nome { font-size: 1.2em; font-weight: bold; color: #00d4ff; }
+  .bloco { background: #0f3460; border-radius: 8px; padding: 10px 12px; margin-bottom: 8px; border-left: 4px solid; cursor: pointer; transition: all 0.2s; position: relative; }
+  .bloco:hover { transform: translateX(4px); box-shadow: 0 2px 12px rgba(0,0,0,0.3); }
+  .bloco:last-child { margin-bottom: 0; }
+  .bloco-hora { font-size: 0.8em; color: #aaa; }
+  .bloco-materia { font-weight: bold; font-size: 1em; }
+  .bloco-tipo { font-size: 0.75em; color: #888; margin-top: 2px; }
+  .bloco-atividade { font-size: 0.85em; color: #ccc; margin-top: 4px; }
+  .bloco-prompt { display: none; margin-top: 8px; padding: 8px; background: #0a1628; border-radius: 6px; border: 1px dashed #00d4ff; font-size: 0.8em; color: #00d4ff; line-height: 1.4; }
+  .bloco-prompt .prompt-label { color: #888; font-size: 0.75em; margin-bottom: 4px; display: block; }
+  .bloco-prompt .prompt-text { color: #e0e0e0; white-space: pre-wrap; word-break: break-word; }
+  .bloco-prompt .copy-btn { display: inline-block; margin-top: 6px; padding: 4px 10px; background: #00d4ff; color: #1a1a2e; border: none; border-radius: 4px; cursor: pointer; font-size: 0.75em; font-weight: bold; }
+  .bloco-prompt .copy-btn:hover { background: #33ddff; }
+  .ativo .bloco-prompt { display: block; }
+  .click-hint { font-size: 0.65em; color: #555; margin-left: 6px; }
+  .sql { border-color: #e94560; } .sql .bloco-materia { color: #e94560; }
+  .mat { border-color: #f5a623; } .mat .bloco-materia { color: #f5a623; }
+  .port { border-color: #7ed321; } .port .bloco-materia { color: #7ed321; }
+  .info { border-color: #4a90d9; } .info .bloco-materia { color: #4a90d9; }
+  .log { border-color: #bd10e0; } .log .bloco-materia { color: #bd10e0; }
+  .eng { border-color: #00b8d4; } .eng .bloco-materia { color: #00b8d4; }
+  .treino { border-color: #ff6b6b; } .treino .bloco-materia { color: #ff6b6b; }
+  .aula { border-color: #ff9500; } .aula .bloco-materia { color: #ff9500; }
+  .igreja { border-color: #fff; } .igreja .bloco-materia { color: #fff; }
+  .cafe { border-color: #8b5e3c; } .cafe .bloco-materia { color: #c49a6c; }
+  .legenda { display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; margin: 25px 0; }
+  .leg-item { display: flex; align-items: center; gap: 6px; font-size: 0.85em; }
+  .leg-cor { width: 14px; height: 14px; border-radius: 3px; }
+  .dica { background: #0f3460; border-radius: 10px; padding: 15px; margin-top: 20px; border: 1px dashed #00d4ff; }
+  .dica h3 { color: #00d4ff; margin-bottom: 8px; font-size: 1em; }
+  .dica ul { padding-left: 20px; }
+  .dica li { margin-bottom: 5px; font-size: 0.85em; color: #ccc; }
+</style>
+</head>
+<body>
+
+<h1>📚 Cronograma de Estudos - Max</h1>
+<p class="sub">Cajueiro Seco, Jaboatão dos Guararapes • Atualizado: 06/07/2026</p>
+
+<div class="legenda">
+  <div class="leg-item"><div class="leg-cor" style="background:#e94560"></div> SQL</div>
+  <div class="leg-item"><div class="leg-cor" style="background:#f5a623"></div> Matemática</div>
+  <div class="leg-item"><div class="leg-cor" style="background:#7ed321"></div> Português</div>
+  <div class="leg-item"><div class="leg-cor" style="background:#4a90d9"></div> Informática</div>
+  <div class="leg-item"><div class="leg-cor" style="background:#bd10e0"></div> Lógica</div>
+  <div class="leg-item"><div class="leg-cor" style="background:#00b8d4"></div> Inglês</div>
+  <div class="leg-item"><div class="leg-cor" style="background:#ff6b6b"></div> Treino Físico</div>
+  <div class="leg-item"><div class="leg-cor" style="background:#ff9500"></div> Aula Sobrinha</div>
+  <div class="leg-item"><div class="leg-cor" style="background:#fff"></div> Igreja</div>
+</div>
+
+<div class="dias">
+
+<!-- SEGUNDA -->
+<div class="dia">
+  <div class="dia-header"><span class="dia-icon">🟡</span><span class="dia-nome">Segunda-feira</span></div>
+  <div class="bloco sql" onclick="toggle(this)">
+    <div class="bloco-hora">08:00 - 09:20</div>
+    <div class="bloco-materia">SQL<span class="click-hint">▶ clique</span></div>
+    <div class="bloco-tipo">Prática + Exercícios</div>
+    <div class="bloco-atividade">Queries, joins, subconsultas</div>
+    <div class="bloco-prompt"><span class="prompt-label">📋 Copia e cola na IA:</span><span class="prompt-text">Gere 10 exercícios práticos de SQL nível intermediário sobre: INNER JOIN, LEFT JOIN, RIGHT JOIN e FULL OUTER JOIN. Inclua o contexto de um banco de dados de uma loja com tabelas: clientes, pedidos, produtos, itens_pedido. Para cada exercício, mostre: a pergunta, a query SQL correta, e uma breve explicação do resultado esperado.</span><button class="copy-btn" onclick="copyPrompt(event, this)">📋 Copiar</button></div>
+  </div>
+  <div class="bloco mat" onclick="toggle(this)">
+    <div class="bloco-hora">09:25 - 10:10</div>
+    <div class="bloco-materia">Matemática<span class="click-hint">▶ clique</span></div>
+    <div class="bloco-tipo">Teoria + Exercícios</div>
+    <div class="bloco-atividade">Raciocínio lógico, porcentagem, razão/proporção</div>
+    <div class="bloco-prompt"><span class="prompt-label">📋 Copia e cola na IA:</span><span class="prompt-text">Gere 8 exercícios de Matemática nível concurso sobre: porcentagem, razão e proporção. Contexto: prepareção para concursos públicos nível médio em Pernambuco. Para cada questão: enunciado claro, 5 alternativas (A-E), gabarito com resolução passo a passo.</span><button class="copy-btn" onclick="copyPrompt(event, this)">📋 Copiar</button></div>
+  </div>
+  <div class="bloco port" onclick="toggle(this)">
+    <div class="bloco-hora">10:15 - 11:00</div>
+    <div class="bloco-materia">Português<span class="click-hint">▶ clique</span></div>
+    <div class="bloco-tipo">Leitura + Exercícios</div>
+    <div class="bloco-atividade">Interpretação, gramática, concordância</div>
+    <div class="bloco-prompt"><span class="prompt-label">📋 Copia e cola na IA:</span><span class="prompt-text">Gere 8 exercícios de Português nível concurso sobre: concordância verbal e nominal. Nível médio, estilo CESPE/CEBRASPE ou FGV. Para cada questão: enunciado, 5 alternativas, gabarito com explicação gramatical.</span><button class="copy-btn" onclick="copyPrompt(event, this)">📋 Copiar</button></div>
+  </div>
+  <div class="bloco eng" onclick="toggle(this)">
+    <div class="bloco-hora">14:00 - 14:45</div>
+    <div class="bloco-materia">Inglês<span class="click-hint">▶ clique</span></div>
+    <div class="bloco-tipo">Vocabulário + Leitura</div>
+    <div class="bloco-atividade">Vocabulário tech, leitura de textos simples</div>
+    <div class="bloco-prompt"><span class="prompt-label">📋 Copia e cola na IA:</span><span class="prompt-text">Gere um exercício de Inglês para iniciante focado em vocabulário de tecnologia e informática: 15 palavras/expressões em inglês com tradução, 1 texto curto (8-10 linhas) usando essas palavras, 5 questões de interpretação sobre o texto, e um mini-diálogo prático de entrevista de emprego em TI (10 frases).</span><button class="copy-btn" onclick="copyPrompt(event, this)">📋 Copiar</button></div>
+  </div>
+  <div class="bloco info" onclick="toggle(this)">
+    <div class="bloco-hora">14:50 - 15:35</div>
+    <div class="bloco-materia">Informática<span class="click-hint">▶ clique</span></div>
+    <div class="bloco-tipo">Teoria</div>
+    <div class="bloco-atividade">Windows, Office, Internet, segurança</div>
+    <div class="bloco-prompt"><span class="prompt-label">📋 Copia e cola na IA:</span><span class="prompt-text">Gere 8 exercícios de Informática nível concurso sobre: Windows 10/11, Microsoft Office (Word, Excel, PowerPoint), navegação web e segurança digital. Nível médio. Para cada: enunciado, 5 alternativas, gabarito com explicação.</span><button class="copy-btn" onclick="copyPrompt(event, this)">📋 Copiar</button></div>
+  </div>
+  <div class="bloco log" onclick="toggle(this)">
+    <div class="bloco-hora">15:40 - 16:00</div>
+    <div class="bloco-materia">Lógica<span class="click-hint">▶ clique</span></div>
+    <div class="bloco-tipo">Exercícios</div>
+    <div class="bloco-atividade">Proposições, tabelas-verdade, sequências</div>
+    <div class="bloco-prompt"><span class="prompt-label">📋 Copia e cola na IA:</span><span class="prompt-text">Gere 8 exercícios de Raciocínio Lógico nível concurso sobre: proposições, conectivos lógicos (e, ou, se...então), negação, tabelas-verdade. Nível médio. Para cada: enunciado, 5 alternativas, gabarito com resolução detalhada.</span><button class="copy-btn" onclick="copyPrompt(event, this)">📋 Copiar</button></div>
+  </div>
+  <div class="bloco treino" onclick="toggle(this)">
+    <div class="bloco-hora">16:00 - 17:00</div>
+    <div class="bloco-materia">🏋️ Treino Físico<span class="click-hint">▶ clique</span></div>
+    <div class="bloco-tipo">Treino A - Superior</div>
+    <div class="bloco-atividade">Peito, ombro, tríceps + alongamento</div>
+    <div class="bloco-prompt"><span class="prompt-label">📋 Copia e cola na IA:</span><span class="prompt-text">Monte um treino de musculação para ser feito em casa (sem equipamento, só peso corporal) focado em: peito, ombro e tríceps. Duração: 45-60 minutos. Inclua: aquecimento (5 min), 6-8 exercícios com séries e repetições, descanso entre séries, e alongamento final (5 min). Sou iniciante/intermediário.</span><button class="copy-btn" onclick="copyPrompt(event, this)">📋 Copiar</button></div>
+  </div>
+  <div class="bloco sql" onclick="toggle(this)">
+    <div class="bloco-hora">17:00 - 17:30</div>
+    <div class="bloco-materia">SQL<span class="click-hint">▶ clique</span></div>
+    <div class="bloco-tipo">Revisão do dia</div>
+    <div class="bloco-atividade">Rever exercícios, anotar dúvidas</div>
+    <div class="bloco-prompt"><span class="prompt-label">📋 Copia e cola na IA:</span><span class="prompt-text">Gere 5 exercícios rápidos de revisão SQL sobre: SELECT, WHERE, ORDER BY, LIMIT. Nível básico/intermediário. Para cada: pergunta direta, query esperada como resposta, e dica se errar.</span><button class="copy-btn" onclick="copyPrompt(event, this)">📋 Copiar</button></div>
+  </div>
+</div>
+
+<!-- TERÇA -->
+<div class="dia">
+  <div class="dia-header"><span class="dia-icon">🟡</span><span class="dia-nome">Terça-feira</span></div>
+  <div class="bloco mat" onclick="toggle(this)">
+    <div class="bloco-hora">08:00 - 08:45</div>
+    <div class="bloco-materia">Matemática<span class="click-hint">▶ clique</span></div>
+    <div class="bloco-tipo">Exercícios</div>
+    <div class="bloco-atividade">Problemas, cálculo, frações</div>
+    <div class="bloco-prompt"><span class="prompt-label">📋 Copia e cola na IA:</span><span class="prompt-text">Gere 8 exercícios de Matemática nível concurso sobre: frações, decimais, MMC e MDC. Nível médio, estilo questões de concursos públicos. Para cada: enunciado contextualizado, 5 alternativas, gabarito com resolução passo a passo.</span><button class="copy-btn" onclick="copyPrompt(event, this)">📋 Copiar</button></div>
+  </div>
+  <div class="bloco eng" onclick="toggle(this)">
+    <div class="bloco-hora">08:50 - 09:35</div>
+    <div class="bloco-materia">Inglês<span class="click-hint">▶ clique</span></div>
+    <div class="bloco-tipo">Gramática + Listening</div>
+    <div class="bloco-atividade">Tempos verbais, аудио básico</div>
+    <div class="bloco-prompt"><span class="prompt-label">📋 Copia e cola na IA:</span><span class="prompt-text">Gere um exercício de Inglês para iniciante sobre: Present Simple, Present Continuous, Past Simple. Inclua: explicação resumida de cada tempo verbal com exemplos, 10 frases para completar com o tempo verbal correto, 5 questões de múltipla escolha, e 5 frases para traduzir do português pro inglês (contexto do dia a dia).</span><button class="copy-btn" onclick="copyPrompt(event, this)">📋 Copiar</button></div>
+  </div>
+  <div class="bloco sql" onclick="toggle(this)">
+    <div class="bloco-hora">09:40 - 11:00</div>
+    <div class="bloco-materia">SQL<span class="click-hint">▶ clique</span></div>
+    <div class="bloco-tipo">Prática Intensiva</div>
+    <div class="bloco-atividade">Subconsultas, EXISTS, CASE WHEN</div>
+    <div class="bloco-prompt"><span class="prompt-label">📋 Copia e cola na IA:</span><span class="prompt-text">Gere 10 exercícios práticos de SQL nível intermediário sobre: subconsultas (subqueries), EXISTS/NOT EXISTS, CASE WHEN, e COALESCE. Contexto: banco de RH com tabelas: funcionarios, departamentos, cargos, salaries, historico_cargos. Para cada: enunciado, query SQL correta, explicação.</span><button class="copy-btn" onclick="copyPrompt(event, this)">📋 Copiar</button></div>
+  </div>
+  <div class="bloco info" onclick="toggle(this)">
+    <div class="bloco-hora">14:00 - 14:45</div>
+    <div class="bloco-materia">Informática<span class="click-hint">▶ clique</span></div>
+    <div class="bloco-tipo">Exercícios</div>
+    <div class="bloco-atividade">Questões de concurso, simulados</div>
+    <div class="bloco-prompt"><span class="prompt-label">📋 Copia e cola na IA:</span><span class="prompt-text">Gere 8 exercícios de Informática nível concurso sobre: redes de computadores, protocolos (TCP/IP, HTTP, FTP), hardware (componentes, memória, processador). Nível médio. Para cada: enunciado, 5 alternativas, gabarito com explicação.</span><button class="copy-btn" onclick="copyPrompt(event, this)">📋 Copiar</button></div>
+  </div>
+  <div class="bloco port" onclick="toggle(this)">
+    <div class="bloco-hora">14:50 - 15:35</div>
+    <div class="bloco-materia">Português<span class="click-hint">▶ clique</span></div>
+    <div class="bloco-tipo">Exercícios</div>
+    <div class="bloco-atividade">Ortografia, pontuação, regência</div>
+    <div class="bloco-prompt"><span class="prompt-label">📋 Copia e cola na IA:</span><span class="prompt-text">Gere 8 exercícios de Português nível concurso sobre: ortografia (ss/s, j/g, x/ch), pontuação, e regência verbal. Nível médio. Para cada: enunciado, 5 alternativas, gabarito com regra gramatical.</span><button class="copy-btn" onclick="copyPrompt(event, this)">📋 Copiar</button></div>
+  </div>
+  <div class="bloco treino" onclick="toggle(this)">
+    <div class="bloco-hora">16:00 - 17:00</div>
+    <div class="bloco-materia">🏋️ Treino Físico<span class="click-hint">▶ clique</span></div>
+    <div class="bloco-tipo">Treino B - Inferior</div>
+    <div class="bloco-atividade">Pernas, glúteos, core + alongamento</div>
+    <div class="bloco-prompt"><span class="prompt-label">📋 Copia e cola na IA:</span><span class="prompt-text">Monte um treino de musculação para ser feito em casa (peso corporal) focado em: pernas, glúteos e core (abdômen/lombar). Duração: 45-60 minutos. Inclua: aquecimento (5 min), 6-8 exercícios com séries e repetições, descanso entre séries, e alongamento final (5 min). Sou iniciante/intermediário.</span><button class="copy-btn" onclick="copyPrompt(event, this)">📋 Copiar</button></div>
+  </div>
+  <div class="bloco log" onclick="toggle(this)">
+    <div class="bloco-hora">17:00 - 17:30</div>
+    <div class="bloco-materia">Lógica<span class="click-hint">▶ clique</span></div>
+    <div class="bloco-tipo">Exercícios</div>
+    <div class="bloco-atividade">Equivalências, diagramas lógicos</div>
+    <div class="bloco-prompt"><span class="prompt-label">📋 Copia e cola na IA:</span><span class="prompt-text">Gere 8 exercícios de Raciocínio Lógico nível concurso sobre: equivalências lógicas, negação de proposições compostas, diagramas lógicos. Nível médio. Para cada: enunciado, 5 alternativas, gabarito com resolução.</span><button class="copy-btn" onclick="copyPrompt(event, this)">📋 Copiar</button></div>
+  </div>
+  <div class="bloco aula">
+    <div class="bloco-hora">18:30 - 20:00</div>
+    <div class="bloco-materia">🎓 Aula - Sobrinha</div>
+    <div class="bloco-tipo">Matemática</div>
+    <div class="bloco-atividade">Ensinar, reforçar conteúdo escolar</div>
+  </div>
+  <div class="bloco sql" onclick="toggle(this)">
+    <div class="bloco-hora">20:10 - 21:00</div>
+    <div class="bloco-materia">SQL<span class="click-hint">▶ clique</span></div>
+    <div class="bloco-tipo">Revisão Leve</div>
+    <div class="bloco-atividade">Rever queries do dia, anotar dúvidas</div>
+    <div class="bloco-prompt"><span class="prompt-label">📋 Copia e cola na IA:</span><span class="prompt-text">Gere 5 mini-desafios de SQL para revisão noturna: 1 de JOIN, 1 de GROUP BY, 1 de subquery, 1 de CASE WHEN, 1 de funções de string/numero. Direto e rápido, com resposta.</span><button class="copy-btn" onclick="copyPrompt(event, this)">📋 Copiar</button></div>
+  </div>
+</div>
+
+<!-- QUARTA -->
+<div class="dia">
+  <div class="dia-header"><span class="dia-icon">🟡</span><span class="dia-nome">Quarta-feira</span></div>
+  <div class="bloco port" onclick="toggle(this)">
+    <div class="bloco-hora">08:00 - 08:45</div>
+    <div class="bloco-materia">Português<span class="click-hint">▶ clique</span></div>
+    <div class="bloco-tipo">Teoria</div>
+    <div class="bloco-atividade">Classes de palavras, sintaxe</div>
+    <div class="bloco-prompt"><span class="prompt-label">📋 Copia e cola na IA:</span><span class="prompt-text">Gere 8 exercícios de Português nível concurso sobre: classes de palavras (substantivo, adjetivo, verbo, advérbio, pronome) e análise sintática (sujeito, predicado, complementos). Nível médio. Para cada: enunciado, 5 alternativas, gabarito com explicação.</span><button class="copy-btn" onclick="copyPrompt(event, this)">📋 Copiar</button></div>
+  </div>
+  <div class="bloco eng" onclick="toggle(this)">
+    <div class="bloco-hora">08:50 - 09:35</div>
+    <div class="bloco-materia">Inglês<span class="click-hint">▶ clique</span></div>
+    <div class="bloco-tipo">Conversação + Vocabulário</div>
+    <div class="bloco-atividade">Frases do dia a dia, pronunciation</div>
+    <div class="bloco-prompt"><span class="prompt-label">📋 Copia e cola na IA:</span><span class="prompt-text">Gere material de Inglês para conversação nível iniciante: 20 frases úteis do dia a dia (cumprimentar, perguntar, responder, agradecer, pedir informação) com tradução e pronúncia aproximada em português. Depois 1 diálogo completo em restaurante (10-12 falas) e 1 diálogo em entrevista de emprego simples (8-10 falas). Inclua expressões idiomáticas comuns.</span><button class="copy-btn" onclick="copyPrompt(event, this)">📋 Copiar</button></div>
+  </div>
+  <div class="bloco sql" onclick="toggle(this)">
+    <div class="bloco-hora">09:40 - 11:00</div>
+    <div class="bloco-materia">SQL<span class="click-hint">▶ clique</span></div>
+    <div class="bloco-tipo">Prática + Estudo</div>
+    <div class="bloco-atividade">GROUP BY, HAVING, views</div>
+    <div class="bloco-prompt"><span class="prompt-label">📋 Copia e cola na IA:</span><span class="prompt-text">Gere 10 exercícios práticos de SQL nível intermediário sobre: GROUP BY, HAVING, funções de agregação (COUNT, SUM, AVG, MIN, MAX), e CREATE VIEW. Contexto: banco de e-commerce com tabelas: vendas, produtos, categorias, clientes, vendedores. Para cada: enunciado, query correta, explicação.</span><button class="copy-btn" onclick="copyPrompt(event, this)">📋 Copiar</button></div>
+  </div>
+  <div class="bloco log" onclick="toggle(this)">
+    <div class="bloco-hora">14:00 - 14:45</div>
+    <div class="bloco-materia">Lógica<span class="click-hint">▶ clique</span></div>
+    <div class="bloco-tipo">Exercícios</div>
+    <div class="bloco-atividade">Silogismos, argumentação</div>
+    <div class="bloco-prompt"><span class="prompt-label">📋 Copia e cola na IA:</span><span class="prompt-text">Gere 8 exercícios de Raciocínio Lógico nível concurso sobre: silogismos, argumentação válida e inválida, diagramas de Venn aplicados à lógica. Nível médio. Para cada: enunciado, 5 alternativas, gabarito com demonstração.</span><button class="copy-btn" onclick="copyPrompt(event, this)">📋 Copiar</button></div>
+  </div>
+  <div class="bloco info" onclick="toggle(this)">
+    <div class="bloco-hora">14:50 - 15:35</div>
+    <div class="bloco-materia">Informática<span class="click-hint">▶ clique</span></div>
+    <div class="bloco-tipo">Teoria</div>
+    <div class="bloco-atividade">Redes, protocolos, hardware</div>
+    <div class="bloco-prompt"><span class="prompt-label">📋 Copia e cola na IA:</span><span class="prompt-text">Gere 8 exercícios de Informática nível concurso sobre: Excel (fórmulas, funções SE, PROCV, SOMASE, gráficos), atalhos de teclado Windows e Office. Nível médio. Para cada: enunciado, 5 alternativas, gabarito com explicação.</span><button class="copy-btn" onclick="copyPrompt(event, this)">📋 Copiar</button></div>
+  </div>
+  <div class="bloco treino" onclick="toggle(this)">
+    <div class="bloco-hora">16:00 - 17:00</div>
+    <div class="bloco-materia">🏋️ Treino Físico<span class="click-hint">▶ clique</span></div>
+    <div class="bloco-tipo">Treino A - Superior</div>
+    <div class="bloco-atividade">Peito, ombro, tríceps + alongamento</div>
+    <div class="bloco-prompt"><span class="prompt-label">📋 Copia e cola na IA:</span><span class="prompt-text">Monte um treino de musculação para casa (peso corporal) focado em: peito, ombro e tríceps. Duração: 45-60 minutos. Inclua: aquecimento (5 min), 6-8 exercícios com séries e repetições, descanso entre séries, e alongamento final (5 min). Sou iniciante/intermediário.</span><button class="copy-btn" onclick="copyPrompt(event, this)">📋 Copiar</button></div>
+  </div>
+  <div class="bloco sql" onclick="toggle(this)">
+    <div class="bloco-hora">17:00 - 17:30</div>
+    <div class="bloco-materia">SQL<span class="click-hint">▶ clique</span></div>
+    <div class="bloco-tipo">Projeto Prático</div>
+    <div class="bloco-atividade">Modelar tabelas, popular dados</div>
+    <div class="bloco-prompt"><span class="prompt-label">📋 Copia e cola na IA:</span><span class="prompt-text">Gere um mini-projeto SQL prático: crie o esquema completo (DDL) de um banco para gerenciar uma biblioteca com: livros, autores, categorias, empréstimos, leitores. Inclua: CREATE TABLE com constraints (PK, FK, NOT NULL, CHECK), INSERT com dados de exemplo (5 registros cada), e 5 consultas úteis (livros disponíveis, empréstimos atrasados, etc).</span><button class="copy-btn" onclick="copyPrompt(event, this)">📋 Copiar</button></div>
+  </div>
+</div>
+
+<!-- QUINTA -->
+<div class="dia">
+  <div class="dia-header"><span class="dia-icon">🟡</span><span class="dia-nome">Quinta-feira</span></div>
+  <div class="bloco info" onclick="toggle(this)">
+    <div class="bloco-hora">08:00 - 08:45</div>
+    <div class="bloco-materia">Informática<span class="click-hint">▶ clique</span></div>
+    <div class="bloco-tipo">Exercícios</div>
+    <div class="bloco-atividade">Questões concurso, simulados</div>
+    <div class="bloco-prompt"><span class="prompt-label">📋 Copia e cola na IA:</span><span class="prompt-text">Gere 8 exercícios de Informática nível concurso sobre: segurança digital (vírus, firewall, criptografia, phishing), navegação web, URL, cookies, certificados digitais. Nível médio. Para cada: enunciado, 5 alternativas, gabarito com explicação.</span><button class="copy-btn" onclick="copyPrompt(event, this)">📋 Copiar</button></div>
+  </div>
+  <div class="bloco eng" onclick="toggle(this)">
+    <div class="bloco-hora">08:50 - 09:35</div>
+    <div class="bloco-materia">Inglês<span class="click-hint">▶ clique</span></div>
+    <div class="bloco-tipo">Leitura + Interpretação</div>
+    <div class="bloco-atividade">Textos curtos, vocabulário novo</div>
+    <div class="bloco-prompt"><span class="prompt-label">📋 Copia e cola na IA:</span><span class="prompt-text">Gere um exercício de leitura em Inglês nível iniciante/intermediário: 1 texto sobre tecnologia ou carreira em TI (12-15 linhas, vocabulário acessível), 8 questões de interpretação (5 múltipla escolha + 3 verdadeiro/falso), lista dos 10 vocábulos mais difíceis com tradução, e 3 questões de gramática extraídas do texto.</span><button class="copy-btn" onclick="copyPrompt(event, this)">📋 Copiar</button></div>
+  </div>
+  <div class="bloco sql" onclick="toggle(this)">
+    <div class="bloco-hora">09:40 - 11:00</div>
+    <div class="bloco-materia">SQL<span class="click-hint">▶ clique</span></div>
+    <div class="bloco-tipo">Prática Intensiva</div>
+    <div class="bloco-atividade">Stored procedures, triggers, índices</div>
+    <div class="bloco-prompt"><span class="prompt-label">📋 Copia e cola na IA:</span><span class="prompt-text">Gere 8 exercícios práticos de SQL nível avançado sobre: CREATE INDEX, stored procedures básicas, triggers simples, e transações (BEGIN, COMMIT, ROLLBACK). Contexto: banco de estoque de uma farmácia. Para cada: enunciado, código SQL completo, explicação detalhada.</span><button class="copy-btn" onclick="copyPrompt(event, this)">📋 Copiar</button></div>
+  </div>
+  <div class="bloco mat" onclick="toggle(this)">
+    <div class="bloco-hora">14:00 - 14:45</div>
+    <div class="bloco-materia">Matemática<span class="click-hint">▶ clique</span></div>
+    <div class="bloco-tipo">Teoria + Exercícios</div>
+    <div class="bloco-atividade">Estatística, probabilidade</div>
+    <div class="bloco-prompt"><span class="prompt-label">📋 Copia e cola na IA:</span><span class="prompt-text">Gere 8 exercícios de Matemática nível concurso sobre: estatística (média, mediana, moda, desvio padrão) e probabilidade simples. Nível médio. Para cada: enunciado contextualizado, 5 alternativas, gabarito com resolução.</span><button class="copy-btn" onclick="copyPrompt(event, this)">📋 Copiar</button></div>
+  </div>
+  <div class="bloco port" onclick="toggle(this)">
+    <div class="bloco-hora">14:50 - 15:35</div>
+    <div class="bloco-materia">Português<span class="click-hint">▶ clique</span></div>
+    <div class="bloco-tipo">Exercícios</div>
+    <div class="bloco-atividade">Revisão geral, questões de provas</div>
+    <div class="bloco-prompt"><span class="prompt-label">📋 Copia e cola na IA:</span><span class="prompt-text">Gere 8 exercícios de Português nível concurso revisão geral combinando: interpretação de texto, gramática (concordância, regência, colocação pronominal) e ortografia. Nível médio, misto. Para cada: enunciado, 5 alternativas, gabarito.</span><button class="copy-btn" onclick="copyPrompt(event, this)">📋 Copiar</button></div>
+  </div>
+  <div class="bloco treino" onclick="toggle(this)">
+    <div class="bloco-hora">16:00 - 17:00</div>
+    <div class="bloco-materia">🏋️ Treino Físico<span class="click-hint">▶ clique</span></div>
+    <div class="bloco-tipo">Treino B - Inferior</div>
+    <div class="bloco-atividade">Pernas, glúteos, core + alongamento</div>
+    <div class="bloco-prompt"><span class="prompt-label">📋 Copia e cola na IA:</span><span class="prompt-text">Monte um treino de musculação para casa (peso corporal) focado em: pernas, glúteos e core. Duração: 45-60 minutos. Inclua: aquecimento (5 min), 6-8 exercícios com séries e repetições, descanso entre séries, e alongamento final (5 min). Sou iniciante/intermediário.</span><button class="copy-btn" onclick="copyPrompt(event, this)">📋 Copiar</button></div>
+  </div>
+  <div class="bloco aula">
+    <div class="bloco-hora">18:30 - 20:00</div>
+    <div class="bloco-materia">🎓 Aula - Sobrinha</div>
+    <div class="bloco-tipo">Matemática</div>
+    <div class="bloco-atividade">Ensinar, reforçar conteúdo escolar</div>
+  </div>
+  <div class="bloco log" onclick="toggle(this)">
+    <div class="bloco-hora">20:10 - 21:00</div>
+    <div class="bloco-materia">Lógica<span class="click-hint">▶ clique</span></div>
+    <div class="bloco-tipo">Exercícios</div>
+    <div class="bloco-atividade">Sequências, padrões numéricos</div>
+    <div class="bloco-prompt"><span class="prompt-label">📋 Copia e cola na IA:</span><span class="prompt-text">Gere 8 exercícios de Raciocínio Lógico nível concurso sobre: sequências numéricas (PA, PG, outras), padrões, e analogias. Nível médio. Para cada: enunciado, 5 alternativas, gabarito com lógica da sequência explicada.</span><button class="copy-btn" onclick="copyPrompt(event, this)">📋 Copiar</button></div>
+  </div>
+</div>
+
+<!-- SEXTA -->
+<div class="dia">
+  <div class="dia-header"><span class="dia-icon">🟡</span><span class="dia-nome">Sexta-feira</span></div>
+  <div class="bloco log" onclick="toggle(this)">
+    <div class="bloco-hora">08:00 - 08:45</div>
+    <div class="bloco-materia">Lógica<span class="click-hint">▶ clique</span></div>
+    <div class="bloco-tipo">Teoria</div>
+    <div class="bloco-atividade">Conectivos, tautologia, contradição</div>
+    <div class="bloco-prompt"><span class="prompt-label">📋 Copia e cola na IA:</span><span class="prompt-text">Gere 8 exercícios de Raciocínio Lógico nível concurso sobre: tautologia, contradição, contingência, e equivalências lógicas importantes (De Morgan, contrapositiva). Nível médio. Para cada: enunciado, 5 alternativas, gabarito com demonstração.</span><button class="copy-btn" onclick="copyPrompt(event, this)">📋 Copiar</button></div>
+  </div>
+  <div class="bloco eng" onclick="toggle(this)">
+    <div class="bloco-hora">08:50 - 09:35</div>
+    <div class="bloco-materia">Inglês<span class="click-hint">▶ clique</span></div>
+    <div class="bloco-tipo">Listening + Escrita</div>
+    <div class="bloco-atividade">Áudios curtos, small talks</div>
+    <div class="bloco-prompt"><span class="prompt-label">📋 Copia e cola na IA:</span><span class="prompt-text">Gere exercícios de Inglês para prática de escrita nível iniciante: 10 frases para traduzir do português pro inglês (situações do dia a dia e trabalho), 1 e-mail formal curto em inglês com lacunas para completar, 1 mensagem informal (WhatsApp) com lacunas, e 5 pares de frases para corrigir erros comuns de brasileiro falando inglês.</span><button class="copy-btn" onclick="copyPrompt(event, this)">📋 Copiar</button></div>
+  </div>
+  <div class="bloco sql" onclick="toggle(this)">
+    <div class="bloco-hora">09:40 - 11:00</div>
+    <div class="bloco-materia">SQL<span class="click-hint">▶ clique</span></div>
+    <div class="bloco-tipo">Desafio Semanal</div>
+    <div class="bloco-atividade">Queries complexas, otimização</div>
+    <div class="bloco-prompt"><span class="prompt-label">📋 Copia e cola na IA:</span><span class="prompt-text">Gere um Desafio Semanal de SQL nível intermediário/avançado: cenário de um sistema de entregas (iFood-like) com tabelas: pedidos, clientes, restaurantes, entregadores, avaliacoes. Crie: 1) o esquema DDL completo, 2) INSERT com dados variados, 3) 10 consultas difíceis (CTE, window functions, subqueries aninhadas), 4) 2 questões de otimização (qual índice criar? como rewrite a query?).</span><button class="copy-btn" onclick="copyPrompt(event, this)">📋 Copiar</button></div>
+  </div>
+  <div class="bloco mat" onclick="toggle(this)">
+    <div class="bloco-hora">14:00 - 14:45</div>
+    <div class="bloco-materia">Matemática<span class="click-hint">▶ clique</span></div>
+    <div class="bloco-tipo">Revisão da Semana</div>
+    <div class="bloco-atividade">Refazer erros, pontos fracos</div>
+    <div class="bloco-prompt"><span class="prompt-label">📋 Copia e cola na IA:</span><span class="prompt-text">Gere 6 exercícios de Matemática revisão geral nível concurso misturando: porcentagem, razão/proporção, estatística, geometria, probabilidade. Questões variadas nível médio. Para cada: enunciado, 5 alternativas, gabarito com resolução.</span><button class="copy-btn" onclick="copyPrompt(event, this)">📋 Copiar</button></div>
+  </div>
+  <div class="bloco info" onclick="toggle(this)">
+    <div class="bloco-hora">14:50 - 15:35</div>
+    <div class="bloco-materia">Informática<span class="click-hint">▶ clique</span></div>
+    <div class="bloco-tipo">Revisão</div>
+    <div class="bloco-atividade">Pontos fracos da semana</div>
+    <div class="bloco-prompt"><span class="prompt-label">📋 Copia e cola na IA:</span><span class="prompt-text">Gere 8 exercícios de Informática revisão geral nível concurso misturando: Windows, Office, redes, segurança, hardware. Questões variadas nível médio. Para cada: enunciado, 5 alternativas, gabarito com explicação.</span><button class="copy-btn" onclick="copyPrompt(event, this)">📋 Copiar</button></div>
+  </div>
+  <div class="bloco treino" onclick="toggle(this)">
+    <div class="bloco-hora">16:00 - 17:00</div>
+    <div class="bloco-materia">🏋️ Treino Físico<span class="click-hint">▶ clique</span></div>
+    <div class="bloco-tipo">Treino C - Full Body Cardio</div>
+    <div class="bloco-atividade">Circuito HIIT + core + alongamento</div>
+    <div class="bloco-prompt"><span class="prompt-label">📋 Copia e cola na IA:</span><span class="prompt-text">Monte um treino HIIT (High Intensity Interval Training) para casa sem equipamento: circuito full body com alternância força/cardio. Duração: 40-45 min. Inclua: aquecimento dinâmico (5 min), 4 rounds de circuito (6 exercícios cada, 30s trabalho / 15s descanso), descanso entre rounds (1 min), e alongamento final (5 min). Sou iniciante/intermediário.</span><button class="copy-btn" onclick="copyPrompt(event, this)">📋 Copiar</button></div>
+  </div>
+  <div class="bloco sql" onclick="toggle(this)">
+    <div class="bloco-hora">17:00 - 17:30</div>
+    <div class="bloco-materia">SQL<span class="click-hint">▶ clique</span></div>
+    <div class="bloco-tipo">Revisão + Projeto</div>
+    <div class="bloco-atividade">Continuar banco próprio</div>
+    <div class="bloco-prompt"><span class="prompt-label">📋 Copia e cola na IA:</span><span class="prompt-text">Gere 5 exercícios de SQL para revisão de sexta: misture temas da semana (joins, subqueries, agregação, funções string). Nível intermediário, foco em fixar o que estudou. Para cada: enunciado, query esperada, dica.</span><button class="copy-btn" onclick="copyPrompt(event, this)">📋 Copiar</button></div>
+  </div>
+</div>
+
+<!-- SÁBADO -->
+<div class="dia">
+  <div class="dia-header"><span class="dia-icon">🟢</span><span class="dia-nome">Sábado</span></div>
+  <div class="bloco sql" onclick="toggle(this)">
+    <div class="bloco-hora">08:00 - 09:30</div>
+    <div class="bloco-materia">SQL<span class="click-hint">▶ clique</span></div>
+    <div class="bloco-tipo">Maratona Prática</div>
+    <div class="bloco-atividade">Simulado SQL, exercícios em sequência</div>
+    <div class="bloco-prompt"><span class="prompt-label">📋 Copia e cola na IA:</span><span class="prompt-text">Gere um simulado completo de SQL (15 questões) nível concurso/entrevista de emprego, misturando: SELECT básico, JOINs (todos os tipos), GROUP BY/HAVING, subqueries, funções agregação, CASE, DISTINCT, UNION. Varie a dificuldade (5 fáceis, 5 médias, 5 difíceis). Para cada: enunciado, query correta, explicação.</span><button class="copy-btn" onclick="copyPrompt(event, this)">📋 Copiar</button></div>
+  </div>
+  <div class="bloco mat" onclick="toggle(this)">
+    <div class="bloco-hora">09:35 - 11:00</div>
+    <div class="bloco-materia">Matemática<span class="click-hint">▶ clique</span></div>
+    <div class="bloco-tipo">Simulado Completo</div>
+    <div class="bloco-atividade">Prova simulada, cronômetro, 30+ questões</div>
+    <div class="bloco-prompt"><span class="prompt-label">📋 Copia e cola na IA:</span><span class="prompt-text">Gere um simulado de Matemática para concurso (15 questões) nível médio, misturando todos os temas: porcentagem, razão/proporção, frações, estatística, geometria, probabilidade, sequências, problemas contextualizados. Marque o tempo sugerido: 40 minutos. Para cada: enunciado, 5 alternativas, gabarito com resolução.</span><button class="copy-btn" onclick="copyPrompt(event, this)">📋 Copiar</button></div>
+  </div>
+  <div class="bloco port" onclick="toggle(this)">
+    <div class="bloco-hora">14:00 - 14:45</div>
+    <div class="bloco-materia">Português<span class="click-hint">▶ clique</span></div>
+    <div class="bloco-tipo">Simulado</div>
+    <div class="bloco-atividade">Prova simulada com tempo</div>
+    <div class="bloco-prompt"><span class="prompt-label">📋 Copia e cola na IA:</span><span class="prompt-text">Gere um simulado de Português para concurso (10 questões) nível médio, misturando: interpretação de texto, gramática, ortografia, concordância, regência. Tempo sugerido: 25 minutos. Para cada: enunciado, 5 alternativas, gabarito.</span><button class="copy-btn" onclick="copyPrompt(event, this)">📋 Copiar</button></div>
+  </div>
+  <div class="bloco info" onclick="toggle(this)">
+    <div class="bloco-hora">14:50 - 15:20</div>
+    <div class="bloco-materia">Informática<span class="click-hint">▶ clique</span></div>
+    <div class="bloco-tipo">Simulado Rápido</div>
+    <div class="bloco-atividade">Questões que mais caem</div>
+    <div class="bloco-prompt"><span class="prompt-label">📋 Copia e cola na IA:</span><span class="prompt-text">Gere 8 questões de Informática simulado concurso nível médio: 2 Excel, 2 Windows, 2 redes, 2 segurança. Para cada: enunciado, 5 alternativas, gabarito.</span><button class="copy-btn" onclick="copyPrompt(event, this)">📋 Copiar</button></div>
+  </div>
+  <div class="bloco eng" onclick="toggle(this)">
+    <div class="bloco-hora">15:25 - 16:00</div>
+    <div class="bloco-materia">Inglês<span class="click-hint">▶ clique</span></div>
+    <div class="bloco-tipo">Simulado + Revisão Semanal</div>
+    <div class="bloco-atividade">Teste de vocabulário e gramática</div>
+    <div class="bloco-prompt"><span class="prompt-label">📋 Copia e cola na IA:</span><span class="prompt-text">Gere um mini-simulado de Inglês nível iniciante/intermediário: 5 questões de vocabulário (múltipla escolha), 5 de gramática (tempos verbais, preposições, artigos), 1 texto curto com 3 questões de interpretação, e 5 frases para traduzir. Gabarito no final.</span><button class="copy-btn" onclick="copyPrompt(event, this)">📋 Copiar</button></div>
+  </div>
+  <div class="bloco treino" onclick="toggle(this)">
+    <div class="bloco-hora">16:00 - 17:00</div>
+    <div class="bloco-materia">🏋️ Treino Físico<span class="click-hint">▶ clique</span></div>
+    <div class="bloco-tipo">Treino A - Superior</div>
+    <div class="bloco-atividade">Peito, ombro, tríceps + alongamento</div>
+    <div class="bloco-prompt"><span class="prompt-label">📋 Copia e cola na IA:</span><span class="prompt-text">Monte um treino de musculação para casa (peso corporal) focado em: peito, ombro e tríceps. Sábado = dia de pegar mais pesado! Duração: 50-60 minutos. Aquecimento (5 min), 7-8 exercícios (3-4 séries cada), descanso 60-90s, alongamento final (5 min). Sou intermediário.</span><button class="copy-btn" onclick="copyPrompt(event, this)">📋 Copiar</button></div>
+  </div>
+  <div class="bloco log" onclick="toggle(this)">
+    <div class="bloco-hora">17:00 - 17:30</div>
+    <div class="bloco-materia">Lógica<span class="click-hint">▶ clique</span></div>
+    <div class="bloco-tipo">Revisão Semanal</div>
+    <div class="bloco-atividade">Resumo da semana, pendências</div>
+    <div class="bloco-prompt"><span class="prompt-label">📋 Copia e cola na IA:</span><span class="prompt-text">Gere 6 exercícios de Lógica revisão geral misturando: proposições, tabelas-verdade, silogismos, sequências, equivalências. Nível médio. Para cada: enunciado, 5 alternativas, gabarito com resolução.</span><button class="copy-btn" onclick="copyPrompt(event, this)">📋 Copiar</button></div>
+  </div>
+</div>
+
+<!-- DOMINGO -->
+<div class="dia">
+  <div class="dia-header"><span class="dia-icon">🔵</span><span class="dia-nome">Domingo</span></div>
+  <div class="bloco eng" onclick="toggle(this)">
+    <div class="bloco-hora">08:00 - 08:45</div>
+    <div class="bloco-materia">Inglês<span class="click-hint">▶ clique</span></div>
+    <div class="bloco-tipo">Leve - Séries/Música</div>
+    <div class="bloco-atividade">Assistir série em inglês com legenda, música</div>
+    <div class="bloco-prompt"><span class="prompt-label">📋 Copia e cola na IA:</span><span class="prompt-text">Sugira 5 séries/filmes curtos em inglês com legendas em inglês para iniciante/intermediário praticar listening. Para cada: nome, nível, por que é boa pra aprender, e 10 palavras/expressões comuns que aparecem. Também sugira 5 músicas em inglês fáceis de entender com as 8 palavras principais de cada.</span><button class="copy-btn" onclick="copyPrompt(event, this)">📋 Copiar</button></div>
+  </div>
+  <div class="bloco mat" onclick="toggle(this)">
+    <div class="bloco-hora">08:50 - 09:35</div>
+    <div class="bloco-materia">Matemática<span class="click-hint">▶ clique</span></div>
+    <div class="bloco-tipo">Revisão Leve</div>
+    <div class="bloco-atividade">Refazer questões que errou na semana</div>
+    <div class="bloco-prompt"><span class="prompt-label">📋 Copia e cola na IA:</span><span class="prompt-text">Gere 5 exercícios de Matemática nível fácil/médio revisão: pegue temas que geralmente causam dificuldade (porcentagem com aumento/desconto encadeado, regra de 3 composta). Para cada: enunciado, 5 alternativas, gabarito com macete/dica.</span><button class="copy-btn" onclick="copyPrompt(event, this)">📋 Copiar</button></div>
+  </div>
+  <div class="bloco sql" onclick="toggle(this)">
+    <div class="bloco-hora">09:40 - 11:00</div>
+    <div class="bloco-materia">SQL<span class="click-hint">▶ clique</span></div>
+    <div class="bloco-tipo">Revisão + Estudo Livre</div>
+    <div class="bloco-atividade">Rever conceitos, documentação, vídeos</div>
+    <div class="bloco-prompt"><span class="prompt-label">📋 Copia e cola na IA:</span><span class="prompt-text">Gere 5 exercícios de SQL level review misturando tudo que estudou na semana. Foco em reforçar conceitos, não em dificuldade. Para cada: enunciado direto, query esperada, e uma dica ou curiosidade sobre SQL relacionada.</span><button class="copy-btn" onclick="copyPrompt(event, this)">📋 Copiar</button></div>
+  </div>
+  <div class="bloco treino" onclick="toggle(this)">
+    <div class="bloco-hora">14:00 - 15:00</div>
+    <div class="bloco-materia">🏋️ Treino Físico<span class="click-hint">▶ clique</span></div>
+    <div class="bloco-tipo">Treino B - Inferior</div>
+    <div class="bloco-atividade">Pernas, glúteos, core + alongamento</div>
+    <div class="bloco-prompt"><span class="prompt-label">📋 Copia e cola na IA:</span><span class="prompt-text">Monte um treino de musculação para casa (peso corporal) focado em: pernas, glúteos e core. Domingo = dia leve! Duração: 40-50 minutos. Aquecimento (5 min), 5-6 exercícios (3 séries), descanso generoso, alongamento final bem feito (8 min). Sou iniciante/intermediário.</span><button class="copy-btn" onclick="copyPrompt(event, this)">📋 Copiar</button></div>
+  </div>
+  <div class="bloco igreja">
+    <div class="bloco-hora">18:00 - 20:00</div>
+    <div class="bloco-materia">⛪ Igreja</div>
+    <div class="bloco-tipo">—</div>
+    <div class="bloco-atividade">Culto</div>
+  </div>
+  <div class="bloco port" onclick="toggle(this)">
+    <div class="bloco-hora">20:15 - 21:00</div>
+    <div class="bloco-materia">Português<span class="click-hint">▶ clique</span></div>
+    <div class="bloco-tipo">Leitura Leve</div>
+    <div class="bloco-atividade">Leitura ativa, vocabulário</div>
+    <div class="bloco-prompt"><span class="prompt-label">📋 Copia e cola na IA:</span><span class="prompt-text">Gere 1 texto curto de literatura ou artigo de opinião (10-12 linhas) seguido de 5 questões de interpretação nível médio e 3 questões de gramática extraídas do texto. Inclua vocabulário interessante com sinônimos.</span><button class="copy-btn" onclick="copyPrompt(event, this)">📋 Copiar</button></div>
+  </div>
+</div>
+
+</div>
+
+<div class="dica">
+  <h3>💡 Como usar os prompts</h3>
+  <ul>
+    <li><strong>Clica no card</strong> da matéria → aparece o prompt pronto</li>
+    <li><strong>Clica em 📋 Copiar</strong> → copia pro clipboard</li>
+    <li><strong>Cola na IA</strong> (ChatGPT, Gemini, Copilot etc) → ela gera os exercícios</li>
+    <li><strong>Customiza</strong> → pode alterar nível, quantidade ou tema antes de enviar</li>
+    <li><strong>Treino físico:</strong> usa o prompt pra IA montar o treino do dia com variedade!</li>
+  </ul>
+  <h3>💪 Treinos (A/B/C alternados)</h3>
+  <ul>
+    <li><strong>Treino A - Superior:</strong> peito, ombro, tríceps (Seg, Qua, Sáb)</li>
+    <li><strong>Treino B - Inferior:</strong> pernas, glúteos, core (Ter, Qui, Dom)</li>
+    <li><strong>Treino C - HIIT:</strong> circuito full body cardio (Sexta)</li>
+    <li><strong>~1h diário</strong> entre 16:00-17:00, ajusta conforme o treino</li>
+  </ul>
+  <h3>🇬🇧 Inglês todos os dias!</h3>
+  <ul>
+    <li><strong>Seg/Qua:</strong> Vocabulário tech + leitura</li>
+    <li><strong>Ter:</strong> Gramática + tempos verbais</li>
+    <li><strong>Qui:</strong> Leitura + interpretação de texto</li>
+    <li><strong>Sex:</strong> Listening + escrita prática</li>
+    <li><strong>Sáb:</strong> Simulado + revisão</li>
+    <li><strong>Dom:</strong> Leve - séries/música em inglês</li>
+  </ul>
+  <h3>🎯 Dicas pra manter a motivação</h3>
+  <ul>
+    <li><strong>SQL ganha mais tempo</strong> — é o que te interessa e o mercado quer!</li>
+    <li><strong>5 min antes de começar:</strong> pega água, fecha distrações, lo-fi no fundo</li>
+    <li><strong>Marca o que estudou</strong> — ver progresso motiva!</li>
+    <li><strong>Descanso de 5 min</strong> entre blocos — levanta, estica, olha pra janela</li>
+    <li><strong>Sexta = desafio semanal SQL</strong> — escolhe um tema e manda ver!</li>
+    <li><strong>Sábado = simulado</strong> — faz como se fosse prova, com cronômetro</li>
+    <li><strong>Domingo = leve</strong> — revisão sem pressão, descanso mereceu 💪</li>
+    <li><strong>Não bate cabeça:</strong> travou 10 min? Pula e volta depois</li>
+  </ul>
+</div>
+
+<script>
+function toggle(el) {
+  el.classList.toggle('ativo');
+}
+function copyPrompt(event, btn) {
+  event.stopPropagation();
+  var text = btn.parentElement.querySelector('.prompt-text').textContent;
+  navigator.clipboard.writeText(text).then(function() {
+    btn.textContent = '✅ Copiado!';
+    setTimeout(function() { btn.textContent = '📋 Copiar'; }, 2000);
+  });
+}
+</script>
+
+</body>
+</html>
